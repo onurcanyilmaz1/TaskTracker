@@ -1,0 +1,70 @@
+package com.kafein.tasktracker.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kafein.tasktracker.data.local.TaskEntity
+import com.kafein.tasktracker.repository.TaskRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+class TaskViewModel(
+    private val repository: TaskRepository
+) : ViewModel() {
+
+    val tasks: StateFlow<List<TaskEntity>> =
+        repository.allTasks.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
+    fun addTask(title: String) {
+        val trimmedTitle = title.trim()
+
+        if (trimmedTitle.isBlank()) {
+            return
+        }
+
+        viewModelScope.launch {
+            repository.insertTask(
+                TaskEntity(
+                    title = trimmedTitle
+                )
+            )
+        }
+    }
+
+    fun deleteTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.deleteTask(task)
+        }
+    }
+
+    fun toggleTaskCompletion(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.updateTask(
+                task.copy(
+                    isCompleted = !task.isCompleted
+                )
+            )
+        }
+    }
+
+    fun updateTask(task: TaskEntity, newTitle: String) {
+        val trimmedTitle = newTitle.trim()
+
+        if (trimmedTitle.isBlank()) {
+            return
+        }
+
+        viewModelScope.launch {
+            repository.updateTask(
+                task.copy(
+                    title = trimmedTitle
+                )
+            )
+        }
+    }
+}
