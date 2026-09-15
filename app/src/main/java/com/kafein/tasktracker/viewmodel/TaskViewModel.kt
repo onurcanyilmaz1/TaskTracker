@@ -1,5 +1,6 @@
 package com.kafein.tasktracker.viewmodel
-
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kafein.tasktracker.data.local.TaskEntity
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
 
 class TaskViewModel(
     private val repository: TaskRepository
@@ -19,6 +21,24 @@ class TaskViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+    init {
+        loadInitialTasks()
+    }
+    private fun loadInitialTasks() {
+        viewModelScope.launch {
+            try {
+                repository.loadInitialTasks()
+            } catch (e: Exception) {
+                _errorMessage.value =
+                    "Görevler internetten alınamadı. İnternet bağlantınızı kontrol edin."
+            }
+        }
+    }
+    fun clearError() {
+        _errorMessage.value = null
+    }
 
     fun addTask(title: String) {
         val trimmedTitle = title.trim()
