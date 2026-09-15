@@ -1,5 +1,5 @@
 package com.kafein.tasktracker
-
+import com.kafein.tasktracker.ui.navigation.AppNavigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kafein.tasktracker.data.local.TaskDatabase
 import com.kafein.tasktracker.data.remote.RetrofitClient
 import com.kafein.tasktracker.repository.TaskRepository
-import com.kafein.tasktracker.ui.screens.TaskListScreen
 import com.kafein.tasktracker.ui.theme.TaskTrackerTheme
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 import com.kafein.tasktracker.viewmodel.TaskViewModelFactory
@@ -44,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
 
-                    TaskListScreen(
+                    AppNavigation(
                         viewModel = taskViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )

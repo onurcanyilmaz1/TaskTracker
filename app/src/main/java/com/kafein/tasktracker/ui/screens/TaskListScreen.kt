@@ -1,5 +1,5 @@
 package com.kafein.tasktracker.ui.screens
-
+import androidx.compose.material3.Button
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,7 @@ import java.util.Date
 @Composable
 fun TaskListScreen(
     viewModel: TaskViewModel,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tasks by viewModel.tasks.collectAsState()
@@ -38,6 +39,12 @@ fun TaskListScreen(
         Text(
             text = "Görevler"
         )
+        Button(
+            onClick = onAddClick,
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text("Görev Ekle")
+        }
 
         if (errorMessage != null) {
             Text(
