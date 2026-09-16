@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kafein.tasktracker.data.local.TaskEntity
-import com.kafein.tasktracker.repository.TaskRepository
+import com.kafein.tasktracker.repository.TaskRepositoryContract
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 
 class TaskViewModel(
-    private val repository: TaskRepository
+    private val repository: TaskRepositoryContract
 ) : ViewModel() {
 
     val tasks: StateFlow<List<TaskEntity>> =

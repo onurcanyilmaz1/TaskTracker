@@ -62,4 +62,5 @@ dependencies {
     implementation(libs.retrofit.gson)
 
     implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

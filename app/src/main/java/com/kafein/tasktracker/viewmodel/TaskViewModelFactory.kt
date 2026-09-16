@@ -2,10 +2,10 @@ package com.kafein.tasktracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kafein.tasktracker.repository.TaskRepository
+import com.kafein.tasktracker.repository.TaskRepositoryContract
 
 class TaskViewModelFactory(
-    private val repository: TaskRepository
+    private val repository: TaskRepositoryContract
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

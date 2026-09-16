@@ -1,49 +1,39 @@
 package com.kafein.tasktracker.repository
 
+import com.kafein.tasktracker.data.local.InitialDataPreferences
 import com.kafein.tasktracker.data.local.TaskDao
 import com.kafein.tasktracker.data.local.TaskEntity
-import kotlinx.coroutines.flow.Flow
 import com.kafein.tasktracker.data.remote.TodoApi
 import com.kafein.tasktracker.data.remote.toTaskEntity
-import com.kafein.tasktracker.data.local.InitialDataPreferences
-
+import kotlinx.coroutines.flow.Flow
 
 class TaskRepository(
     private val taskDao: TaskDao,
     private val todoApi: TodoApi,
     private val initialDataPreferences: InitialDataPreferences
+) : TaskRepositoryContract {
 
-) {
+    override val allTasks: Flow<List<TaskEntity>> =
+        taskDao.getAllTasks()
 
-    val allTasks: Flow<List<TaskEntity>> = taskDao.getAllTasks()
-
-    suspend fun insertTask(task: TaskEntity) {
+    override suspend fun insertTask(task: TaskEntity) {
         taskDao.insertTask(task)
     }
 
-    suspend fun insertTasks(tasks: List<TaskEntity>) {
-        taskDao.insertTasks(tasks)
-    }
-
-    suspend fun updateTask(task: TaskEntity) {
+    override suspend fun updateTask(task: TaskEntity) {
         taskDao.updateTask(task)
     }
 
-    suspend fun deleteTask(task: TaskEntity) {
+    override suspend fun deleteTask(task: TaskEntity) {
         taskDao.deleteTask(task)
     }
 
-    suspend fun getTaskCount(): Int {
-        return taskDao.getTaskCount()
-    }
-    suspend fun loadInitialTasks() {
+    override suspend fun loadInitialTasks() {
 
         if (initialDataPreferences.isInitialDataLoaded()) {
             return
         }
 
-        // Geliştirme sırasında Room'a daha önce veri eklediğimiz için
-        // mevcut kullanıcı verisini tekrar API verileriyle doldurmayalım.
         if (taskDao.getTaskCount() > 0) {
             initialDataPreferences.setInitialDataLoaded()
             return
