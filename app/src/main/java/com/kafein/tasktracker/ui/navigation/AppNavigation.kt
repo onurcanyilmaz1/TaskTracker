@@ -35,6 +35,9 @@ fun AppNavigation(
                 },
                 onEditClick = { task ->
                     navController.navigate("edit_task/${task.id}")
+                },
+                onDeleteClick = { task ->
+                    viewModel.deleteTask(task)
                 }
             )
         }

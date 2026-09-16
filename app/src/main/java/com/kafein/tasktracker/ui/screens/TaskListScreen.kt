@@ -28,6 +28,7 @@ fun TaskListScreen(
     viewModel: TaskViewModel,
     onAddClick: () -> Unit,
     onEditClick: (TaskEntity) -> Unit,
+    onDeleteClick: (TaskEntity) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tasks by viewModel.tasks.collectAsState()
@@ -83,6 +84,9 @@ fun TaskListScreen(
                         },
                         onEditClick = {
                             onEditClick(task)
+                        },
+                        onDeleteClick = {
+                            onDeleteClick(task)
                         }
                     )
                 }
@@ -95,7 +99,8 @@ fun TaskListScreen(
 private fun TaskItem(
     task: TaskEntity,
     onCheckedChange: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -129,6 +134,12 @@ private fun TaskItem(
             onClick = onEditClick
         ) {
             Text("Düzenle")
+        }
+
+        TextButton(
+            onClick = onDeleteClick
+        ) {
+            Text("Sil")
         }
     }
 
