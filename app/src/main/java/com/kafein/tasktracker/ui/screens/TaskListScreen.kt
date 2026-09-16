@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kafein.tasktracker.data.local.TaskEntity
+import com.kafein.tasktracker.viewmodel.TaskSortOrder
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 import java.text.DateFormat
 import java.util.Date
@@ -33,6 +34,7 @@ fun TaskListScreen(
 ) {
     val tasks by viewModel.tasks.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val sortOrder by viewModel.sortOrder.collectAsState()
 
     Column(
         modifier = modifier
@@ -51,6 +53,36 @@ fun TaskListScreen(
             Text("Görev Ekle")
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            Button(
+                onClick = {
+                    viewModel.changeSortOrder(
+                        TaskSortOrder.NEWEST_FIRST
+                    )
+                },
+                enabled = sortOrder != TaskSortOrder.NEWEST_FIRST
+            ) {
+                Text("En Yeni")
+            }
+
+            Button(
+                onClick = {
+                    viewModel.changeSortOrder(
+                        TaskSortOrder.OLDEST_FIRST
+                    )
+                },
+                enabled = sortOrder != TaskSortOrder.OLDEST_FIRST
+            ) {
+                Text("En Eski")
+            }
+        }
+
         if (errorMessage != null) {
             Text(
                 text = errorMessage ?: "",
@@ -64,17 +96,13 @@ fun TaskListScreen(
                 modifier = Modifier.padding(top = 16.dp)
             )
         } else {
-
             LazyColumn(
                 modifier = Modifier.padding(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 items(
                     items = tasks,
-                    key = { task ->
-                        task.id
-                    }
+                    key = { task -> task.id }
                 ) { task ->
 
                     TaskItem(

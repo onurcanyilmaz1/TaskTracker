@@ -9,18 +9,44 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+
+enum class TaskSortOrder {
+    NEWEST_FIRST,
+    OLDEST_FIRST
+}
 
 
 class TaskViewModel(
     private val repository: TaskRepositoryContract
 ) : ViewModel() {
 
+    private val _sortOrder =
+        MutableStateFlow(TaskSortOrder.NEWEST_FIRST)
+
+    val sortOrder = _sortOrder.asStateFlow()
+
     val tasks: StateFlow<List<TaskEntity>> =
-        repository.allTasks.stateIn(
+        combine(
+            repository.allTasks,
+            _sortOrder
+        ) { tasks, sortOrder ->
+
+            when (sortOrder) {
+                TaskSortOrder.NEWEST_FIRST ->
+                    tasks.sortedByDescending { it.createdAt }
+
+                TaskSortOrder.OLDEST_FIRST ->
+                    tasks.sortedBy { it.createdAt }
+            }
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+    fun changeSortOrder(sortOrder: TaskSortOrder) {
+        _sortOrder.value = sortOrder
+    }
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
     init {
