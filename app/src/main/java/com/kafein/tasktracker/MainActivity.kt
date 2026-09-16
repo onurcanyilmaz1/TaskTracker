@@ -16,6 +16,11 @@ import com.kafein.tasktracker.ui.theme.TaskTrackerTheme
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 import com.kafein.tasktracker.viewmodel.TaskViewModelFactory
 import com.kafein.tasktracker.data.local.InitialDataPreferences
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
 
@@ -38,7 +43,16 @@ class MainActivity : ComponentActivity() {
         val viewModelFactory = TaskViewModelFactory(repository)
 
         setContent {
-            TaskTrackerTheme {
+
+            val systemDarkTheme = isSystemInDarkTheme()
+
+            var darkTheme by rememberSaveable {
+                mutableStateOf(systemDarkTheme)
+            }
+
+            TaskTrackerTheme(
+                darkTheme = darkTheme
+            ) {
 
                 val taskViewModel: TaskViewModel = viewModel(
                     factory = viewModelFactory
@@ -50,6 +64,10 @@ class MainActivity : ComponentActivity() {
 
                     AppNavigation(
                         viewModel = taskViewModel,
+                        darkTheme = darkTheme,
+                        onThemeToggle = {
+                            darkTheme = !darkTheme
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

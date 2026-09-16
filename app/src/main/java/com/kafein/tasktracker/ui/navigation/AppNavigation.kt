@@ -13,9 +13,13 @@ import com.kafein.tasktracker.ui.screens.AddEditTaskScreen
 import com.kafein.tasktracker.ui.screens.TaskListScreen
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 
+
+
 @Composable
 fun AppNavigation(
     viewModel: TaskViewModel,
+    darkTheme: Boolean,
+    onThemeToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -38,7 +42,9 @@ fun AppNavigation(
                 },
                 onDeleteClick = { task ->
                     viewModel.deleteTask(task)
-                }
+                },
+                darkTheme = darkTheme,
+                onThemeToggle = onThemeToggle
             )
         }
 

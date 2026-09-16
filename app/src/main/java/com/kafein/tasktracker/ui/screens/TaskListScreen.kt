@@ -23,6 +23,8 @@ import com.kafein.tasktracker.viewmodel.TaskSortOrder
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 import java.text.DateFormat
 import java.util.Date
+import androidx.compose.material3.Switch
+import androidx.compose.ui.Alignment
 
 @Composable
 fun TaskListScreen(
@@ -30,6 +32,8 @@ fun TaskListScreen(
     onAddClick: () -> Unit,
     onEditClick: (TaskEntity) -> Unit,
     onDeleteClick: (TaskEntity) -> Unit,
+    darkTheme: Boolean,
+    onThemeToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tasks by viewModel.tasks.collectAsState()
@@ -42,8 +46,26 @@ fun TaskListScreen(
             .padding(16.dp)
     ) {
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Karanlık Mod"
+            )
+
+            Switch(
+                checked = darkTheme,
+                onCheckedChange = {
+                    onThemeToggle()
+                }
+            )
+        }
+
         Text(
-            text = "Görevler"
+            text = "Görevler",
+            modifier = Modifier.padding(top = 8.dp)
         )
 
         Button(
@@ -52,6 +74,9 @@ fun TaskListScreen(
         ) {
             Text("Görev Ekle")
         }
+
+
+
 
         Row(
             modifier = Modifier
