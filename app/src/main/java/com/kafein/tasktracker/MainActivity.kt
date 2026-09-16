@@ -15,6 +15,7 @@ import com.kafein.tasktracker.repository.TaskRepository
 import com.kafein.tasktracker.ui.theme.TaskTrackerTheme
 import com.kafein.tasktracker.viewmodel.TaskViewModel
 import com.kafein.tasktracker.viewmodel.TaskViewModelFactory
+import com.kafein.tasktracker.data.local.InitialDataPreferences
 
 class MainActivity : ComponentActivity() {
 
@@ -25,9 +26,13 @@ class MainActivity : ComponentActivity() {
 
         val database = TaskDatabase.getDatabase(applicationContext)
 
+        val initialDataPreferences =
+            InitialDataPreferences(applicationContext)
+
         val repository = TaskRepository(
             taskDao = database.taskDao(),
-            todoApi = RetrofitClient.todoApi
+            todoApi = RetrofitClient.todoApi,
+            initialDataPreferences = initialDataPreferences
         )
 
         val viewModelFactory = TaskViewModelFactory(repository)

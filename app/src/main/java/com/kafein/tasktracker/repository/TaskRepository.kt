@@ -5,10 +5,14 @@ import com.kafein.tasktracker.data.local.TaskEntity
 import kotlinx.coroutines.flow.Flow
 import com.kafein.tasktracker.data.remote.TodoApi
 import com.kafein.tasktracker.data.remote.toTaskEntity
+import com.kafein.tasktracker.data.local.InitialDataPreferences
+
 
 class TaskRepository(
     private val taskDao: TaskDao,
-    private val todoApi: TodoApi
+    private val todoApi: TodoApi,
+    private val initialDataPreferences: InitialDataPreferences
+
 ) {
 
     val allTasks: Flow<List<TaskEntity>> = taskDao.getAllTasks()
@@ -33,7 +37,15 @@ class TaskRepository(
         return taskDao.getTaskCount()
     }
     suspend fun loadInitialTasks() {
+
+        if (initialDataPreferences.isInitialDataLoaded()) {
+            return
+        }
+
+        // Geliştirme sırasında Room'a daha önce veri eklediğimiz için
+        // mevcut kullanıcı verisini tekrar API verileriyle doldurmayalım.
         if (taskDao.getTaskCount() > 0) {
+            initialDataPreferences.setInitialDataLoaded()
             return
         }
 
@@ -46,5 +58,7 @@ class TaskRepository(
             }
 
         taskDao.insertTasks(tasks)
+
+        initialDataPreferences.setInitialDataLoaded()
     }
 }
