@@ -16,10 +16,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AddEditTaskScreen(
+    initialTitle: String = "",
+    screenTitle: String = "Yeni Görev",
     onSave: (String) -> Unit
 ) {
-    var title by remember {
-        mutableStateOf("")
+    var title by remember(initialTitle) {
+        mutableStateOf(initialTitle)
     }
 
     Column(
@@ -29,7 +31,7 @@ fun AddEditTaskScreen(
     ) {
 
         Text(
-            text = "Yeni Görev"
+            text = screenTitle
         )
 
         OutlinedTextField(
@@ -39,7 +41,8 @@ fun AddEditTaskScreen(
             },
             label = {
                 Text("Görev başlığı")
-            }
+            },
+            modifier = Modifier.padding(top = 16.dp)
         )
 
         Button(

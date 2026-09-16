@@ -1,5 +1,5 @@
 package com.kafein.tasktracker.ui.screens
-import androidx.compose.material3.Button
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +27,7 @@ import java.util.Date
 fun TaskListScreen(
     viewModel: TaskViewModel,
     onAddClick: () -> Unit,
+    onEditClick: (TaskEntity) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tasks by viewModel.tasks.collectAsState()
@@ -39,6 +42,7 @@ fun TaskListScreen(
         Text(
             text = "Görevler"
         )
+
         Button(
             onClick = onAddClick,
             modifier = Modifier.padding(top = 8.dp)
@@ -48,7 +52,8 @@ fun TaskListScreen(
 
         if (errorMessage != null) {
             Text(
-                text = errorMessage ?: ""
+                text = errorMessage ?: "",
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
 
@@ -58,18 +63,26 @@ fun TaskListScreen(
                 modifier = Modifier.padding(top = 16.dp)
             )
         } else {
+
             LazyColumn(
+                modifier = Modifier.padding(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
                 items(
                     items = tasks,
-                    key = { task -> task.id }
+                    key = { task ->
+                        task.id
+                    }
                 ) { task ->
 
                     TaskItem(
                         task = task,
                         onCheckedChange = {
                             viewModel.toggleTaskCompletion(task)
+                        },
+                        onEditClick = {
+                            onEditClick(task)
                         }
                     )
                 }
@@ -81,7 +94,8 @@ fun TaskListScreen(
 @Composable
 private fun TaskItem(
     task: TaskEntity,
-    onCheckedChange: () -> Unit
+    onCheckedChange: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -97,7 +111,9 @@ private fun TaskItem(
         )
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp)
         ) {
 
             Text(
@@ -107,6 +123,12 @@ private fun TaskItem(
             Text(
                 text = formatDate(task.createdAt)
             )
+        }
+
+        TextButton(
+            onClick = onEditClick
+        ) {
+            Text("Düzenle")
         }
     }
 
